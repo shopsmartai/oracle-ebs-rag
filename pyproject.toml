@@ -1,0 +1,32 @@
+[project]
+name = "oracle-ebs-rag"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "shopsmartai", email = "shopsmartai.app@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.40",
+    "cohere>=5.0",
+    "oracledb>=4.0",
+    "pydantic>=2.0",
+    "pypdf>=4.0",
+    "python-frontmatter>=1.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+oracle-ebs-rag = "oracle_ebs_rag:main"
+
+[build-system]
+requires = ["uv_build>=0.11.13,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.5",
+]
