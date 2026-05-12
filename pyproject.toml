@@ -13,12 +13,14 @@ dependencies = [
     "oracledb>=4.0",
     "pydantic>=2.0",
     "pypdf>=4.0",
+    "python-dotenv>=1.2.2",
     "python-frontmatter>=1.0",
     "pyyaml>=6.0",
 ]
 
 [project.scripts]
 oracle-ebs-rag = "oracle_ebs_rag:main"
+ingest = "oracle_ebs_rag.ingest:main"
 
 [build-system]
 requires = ["uv_build>=0.11.13,<0.12.0"]
