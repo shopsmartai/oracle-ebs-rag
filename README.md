@@ -211,10 +211,31 @@ under 50 ms, so the HNSW index is deferred to a future
   realistic structure) but no real customer or internal data has
   been used.
 
+## Evals
+
+The pipeline has an automated eval harness that runs on every change.
+
+| Metric                | Baseline | Notes |
+|-----------------------|----------|-------|
+| Retrieval recall @ 6  | **100%** | Across 10 golden questions (3 notes + 1 out-of-scope) |
+| Must-contain pass     | **100%** | Required facts present in every answer |
+| Must-not-contain pass | **100%** | Zero forbidden / destructive claims |
+| Judge (Claude Haiku)  | **4.80 / 5** | Independent model from the answerer (Sonnet) |
+
+Run locally:
+```bash
+uv run python tests/eval/harness.py        # score all questions
+uv run python tests/eval/regression.py     # CI gate vs baseline
+```
+
+CI runs the eval on every PR via `.github/workflows/eval.yml`,
+fails the build on >5pp drop in retrieval/fact-check (zero tolerance
+on `must_not_contain`). See `tests/eval/golden.yaml` for the test cases.
+
 ## Roadmap
 
-- [ ] Eval harness: 50-question golden set + Claude-Haiku-as-judge + CI
-      regression gate
+- [x] Eval harness: golden set + Claude-Haiku-as-judge + CI regression gate
+- [ ] Grow golden set from 10 → 50 questions across 6+ categories
 - [ ] HNSW vector index + before/after retrieval-latency benchmark
 - [ ] AWR-aware MCP server (separate repo): summarize top SQL, wait
       events, time model for LLM consumption

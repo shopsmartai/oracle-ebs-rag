@@ -1,0 +1,291 @@
+{
+  "summary": {
+    "n": 10,
+    "retrieval_recall": 1.0,
+    "must_contain": 1.0,
+    "must_not_contain": 1.0,
+    "judge_avg": 4.8
+  },
+  "results": [
+    {
+      "id": "Q-001",
+      "category": "concurrent-manager",
+      "question": "A standard concurrent request has been Pending - Normal for 30 minutes. Other requests in the same manager are processing. What do I check first?",
+      "expected_note": "NOTE-001",
+      "retrieved_top_notes": [
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001"
+      ],
+      "retrieval_recall_pass": true,
+      "must_contain_pass": true,
+      "must_not_contain_pass": true,
+      "missing_required": [],
+      "present_forbidden": [],
+      "judge_score": 5,
+      "judge_reason": "Excellent answer. Correctly identifies OPP failure as the likely cause, includes both required facts (Output Post Processor and fnd_svc_components query), avoids forbidden claims (explicitly warns against direct deletion), provides a logical diagnostic sequence with accurate SQL queries, cites NOTE-",
+      "answer_preview": "Based on the context, this is a classic OPP (Output Post Processor) failure pattern. Here's the priority order:\n\n## 1. Confirm the request state\n\n```sql\nSELECT request_id, phase_code, status_code, completion_text,\n       oracle_process_id\n ",
+      "usage": {
+        "input_tokens": 942,
+        "output_tokens": 403,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    },
+    {
+      "id": "Q-002",
+      "category": "concurrent-manager",
+      "question": "Concurrent requests stuck because of OPP crash \u2014 how do I restart OPP and verify it's running?",
+      "expected_note": "NOTE-001",
+      "retrieved_top_notes": [
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001"
+      ],
+      "retrieval_recall_pass": true,
+      "must_contain_pass": true,
+      "must_not_contain_pass": true,
+      "missing_required": [],
+      "present_forbidden": [],
+      "judge_score": 5,
+      "judge_reason": "Excellent answer. Covers all required facts (OAM, Output Post Processor), provides accurate diagnostic steps via fnd_svc_components query, includes proper restart procedure through OAM navigation, verification method, correct guidance on handling stuck requests (no force-delete), and preventive tuni",
+      "answer_preview": "## Restart OPP & Verify\n\n### 1. Confirm OPP is down\n```sql\nSELECT component_name, component_status\n  FROM fnd_svc_components\n WHERE component_name LIKE '%OUTPUT%';\n```\nExpected when crashed: `component_status` \u2260 `RUNNING` [NOTE-001 \u00a7diagnos",
+      "usage": {
+        "input_tokens": 935,
+        "output_tokens": 382,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    },
+    {
+      "id": "Q-003",
+      "category": "concurrent-manager",
+      "question": "What is the table where I can see concurrent request phase and status?",
+      "expected_note": "NOTE-001",
+      "retrieved_top_notes": [
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001"
+      ],
+      "retrieval_recall_pass": true,
+      "must_contain_pass": true,
+      "must_not_contain_pass": true,
+      "missing_required": [],
+      "present_forbidden": [],
+      "judge_score": 5,
+      "judge_reason": "Answer correctly identifies fnd_concurrent_requests as the table for concurrent request phase and status, provides accurate SQL example showing phase_code and status_code columns, cites the expected source (NOTE-001), and contains all required facts with no forbidden claims.",
+      "answer_preview": "`fnd_concurrent_requests` [NOTE-001 \u00a7diagnosis]\n\n```sql\nSELECT request_id, phase_code, status_code, completion_text,\n       oracle_process_id\n  FROM fnd_concurrent_requests\n WHERE request_id = &req_id;\n```",
+      "usage": {
+        "input_tokens": 925,
+        "output_tokens": 70,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    },
+    {
+      "id": "Q-004",
+      "category": "concurrent-manager",
+      "question": "OPP keeps running out of memory when processing XML Publisher reports. How do I increase its heap?",
+      "expected_note": "NOTE-001",
+      "retrieved_top_notes": [
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-003",
+        "NOTE-003"
+      ],
+      "retrieval_recall_pass": true,
+      "must_contain_pass": true,
+      "must_not_contain_pass": true,
+      "missing_required": [],
+      "present_forbidden": [],
+      "judge_score": 5,
+      "judge_reason": "Answer correctly identifies the Xmx parameter for heap memory adjustment, provides accurate navigation path through OAM, includes verification queries and log location for troubleshooting, explains restart procedures, and appropriately acknowledges limitations of the documentation regarding sizing g",
+      "answer_preview": "Based on the context:\n\n**Navigate to:**\nOAM \u2192 OPP \u2192 properties \u2192 set `-Xmx1024m` (minimum for large XMLP jobs)\n\n[NOTE-001 \u00a7resolution]\n\n**Additional recommendations from the same note:**\n\n- Confirm OPP status first:\n  ```sql\n  SELECT compon",
+      "usage": {
+        "input_tokens": 1254,
+        "output_tokens": 250,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    },
+    {
+      "id": "Q-005",
+      "category": "workflow",
+      "question": "Workflow Mailer says component_status is RUNNING in OAM but users aren't receiving any emails. Where do I start?",
+      "expected_note": "NOTE-002",
+      "retrieved_top_notes": [
+        "NOTE-002",
+        "NOTE-002",
+        "NOTE-002",
+        "NOTE-002",
+        "NOTE-002",
+        "NOTE-002"
+      ],
+      "retrieval_recall_pass": true,
+      "must_contain_pass": true,
+      "must_not_contain_pass": true,
+      "missing_required": [],
+      "present_forbidden": [],
+      "judge_score": 5,
+      "judge_reason": "Excellent answer. Systematically addresses the troubleshooting workflow, includes both required facts (wf_notifications and mail_status), provides concrete SQL queries and shell commands, identifies the most common root cause (TLS certificate trust), cites the expected source (NOTE-002) throughout, ",
+      "answer_preview": "## Workflow Mailer Running but No Emails Delivered\n\n### 1. Confirm the backlog\n\n```sql\nSELECT mail_status, COUNT(*)\n  FROM wf_notifications\n WHERE status = 'OPEN' AND mail_status IS NOT NULL\n GROUP BY mail_status;\n```\nIf you see hundreds of",
+      "usage": {
+        "input_tokens": 996,
+        "output_tokens": 621,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    },
+    {
+      "id": "Q-006",
+      "category": "workflow",
+      "question": "Our SMTP server's TLS certificate was just rotated and the mailer stopped sending. How do I update the JVM truststore?",
+      "expected_note": "NOTE-002",
+      "retrieved_top_notes": [
+        "NOTE-002",
+        "NOTE-002",
+        "NOTE-002",
+        "NOTE-002",
+        "NOTE-001",
+        "NOTE-003"
+      ],
+      "retrieval_recall_pass": true,
+      "must_contain_pass": true,
+      "must_not_contain_pass": true,
+      "missing_required": [],
+      "present_forbidden": [],
+      "judge_score": 5,
+      "judge_reason": "Answer is accurate and comprehensive. Contains both required facts (keytool and cacerts), cites the expected source note (NOTE-002), provides correct syntax for extracting the certificate and importing it into the truststore, includes proper EBS-specific guidance (Workflow Manager bounce procedure),",
+      "answer_preview": "## Updating the JVM Truststore After SMTP TLS Certificate Rotation\n\n[NOTE-002 \u00a7root-cause] The mailer fails at TLS handshake but logs it as \"thread idle, no work available\" at INFO level \u2014 easy to miss.\n\n### Step 1 \u2014 Get the new certificate",
+      "usage": {
+        "input_tokens": 1339,
+        "output_tokens": 455,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    },
+    {
+      "id": "Q-007",
+      "category": "workflow",
+      "question": "Why does the mailer log at INFO level not show TLS handshake failures?",
+      "expected_note": "NOTE-002",
+      "retrieved_top_notes": [
+        "NOTE-002",
+        "NOTE-002",
+        "NOTE-002",
+        "NOTE-002",
+        "NOTE-002",
+        "NOTE-001"
+      ],
+      "retrieval_recall_pass": true,
+      "must_contain_pass": true,
+      "must_not_contain_pass": true,
+      "missing_required": [],
+      "present_forbidden": [],
+      "judge_score": 5,
+      "judge_reason": "Answer is accurate and complete. It correctly identifies that TLS handshake failures are logged only at STATEMENT level (required fact present), explains why INFO level masks the error with the 'thread idle' message, cites the source NOTE-002 with specific sections, and provides actionable diagnosti",
+      "answer_preview": "From [NOTE-002 \u00a7root-cause]:\n\nThe TLS handshake failure is logged **only at STATEMENT level**. At INFO level, the mailer swallows the error and instead emits:\n\n> \"thread idle, no work available\"\n\nThis masks the real cause entirely \u2014 the mai",
+      "usage": {
+        "input_tokens": 1049,
+        "output_tokens": 145,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    },
+    {
+      "id": "Q-008",
+      "category": "patching",
+      "question": "adop phase=abort is failing with a serial number mismatch error. What does the error actually mean and how do I fix it?",
+      "expected_note": "NOTE-003",
+      "retrieved_top_notes": [
+        "NOTE-003",
+        "NOTE-003",
+        "NOTE-003",
+        "NOTE-003",
+        "NOTE-003",
+        "NOTE-001"
+      ],
+      "retrieval_recall_pass": true,
+      "must_contain_pass": true,
+      "must_not_contain_pass": true,
+      "missing_required": [],
+      "present_forbidden": [],
+      "judge_score": 4,
+      "judge_reason": "Answer is accurate and well-structured, correctly explaining serial number mismatch between patch filesystem context file and database. Provides useful diagnosis steps and a practical fix. Contains required facts (context, serial) and cites NOTE-003. Minor deduction because the manual XML editing ap",
+      "answer_preview": "## ADOP abort failure: Serial number mismatch\n\n### What the error means\n\nThe `s_contextserial` value in the **patch filesystem context file** is **lower** than the serial number recorded in the database (`fnd_oam_context_files`). This happe",
+      "usage": {
+        "input_tokens": 1512,
+        "output_tokens": 657,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    },
+    {
+      "id": "Q-009",
+      "category": "patching",
+      "question": "Which file do I need to update so the adop abort can complete after a context serial mismatch?",
+      "expected_note": "NOTE-003",
+      "retrieved_top_notes": [
+        "NOTE-003",
+        "NOTE-003",
+        "NOTE-003",
+        "NOTE-003",
+        "NOTE-003",
+        "NOTE-001"
+      ],
+      "retrieval_recall_pass": true,
+      "must_contain_pass": true,
+      "must_not_contain_pass": true,
+      "missing_required": [],
+      "present_forbidden": [],
+      "judge_score": 4,
+      "judge_reason": "Answer correctly identifies CONTEXT_FILE as the required file to update and provides detailed, practical steps including backup, verification, and SQL query to check serial values. The explanation of root cause is accurate. Minor deduction because the answer cites '[NOTE-003 \u00a7resolution]' and '[NOTE",
+      "answer_preview": "Based on [NOTE-003 \u00a7resolution], you need to update the **PATCH filesystem context file** and **all its backups**.\n\n## Steps\n\n1. Source the patch environment:\n   ```bash\n   . /apps/applmgr/r12/EBSapps.env patch\n   ```\n\n2. Back up the contex",
+      "usage": {
+        "input_tokens": 1505,
+        "output_tokens": 469,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    },
+    {
+      "id": "Q-010",
+      "category": "out-of-scope",
+      "question": "How do I configure Oracle GoldenGate replication for an EBS source database?",
+      "expected_note": null,
+      "retrieved_top_notes": [
+        "NOTE-003",
+        "NOTE-003",
+        "NOTE-002",
+        "NOTE-001",
+        "NOTE-001",
+        "NOTE-001"
+      ],
+      "retrieval_recall_pass": true,
+      "must_contain_pass": true,
+      "must_not_contain_pass": true,
+      "missing_required": [],
+      "present_forbidden": [],
+      "judge_score": 5,
+      "judge_reason": "Answer correctly identifies that the provided context doesn't cover GoldenGate configuration. It properly acknowledges the limitation, identifies key required topics (capture setup, supplemental logging, EBS-specific objects, parameter files), cites relevant MOS documentation (Doc ID 1558736.1), and",
+      "answer_preview": "The provided context contains no information about Oracle GoldenGate configuration for EBS source databases.\n\nTo answer this properly, I would need context covering:\n- GoldenGate capture/extract setup for EBS schemas\n- Supplemental logging ",
+      "usage": {
+        "input_tokens": 1679,
+        "output_tokens": 175,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    }
+  ]
+}

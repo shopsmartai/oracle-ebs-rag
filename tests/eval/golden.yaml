@@ -1,0 +1,108 @@
+# Golden eval set for Talk-to-EBS RAG pipeline.
+#
+# Each entry is one test case. Add more as you ingest more notes.
+# Aim for 50+ entries across at least 5 categories before considering
+# coverage "good."
+#
+# Schema:
+#   id              : stable ID like Q-001 (do not renumber existing ones)
+#   question        : exact text sent to the RAG
+#   expected_note   : note that SHOULD appear in retrieved top-k (NOTE-XXX)
+#   must_contain    : list of substrings (case-insensitive) that MUST
+#                     appear in the answer. Empty list = no requirement.
+#   must_not_contain: list of substrings (case-insensitive) that MUST
+#                     NOT appear. Use this to catch destructive or
+#                     hallucinated content.
+#   category        : for slicing scores; matches frontmatter `category`
+
+# ─── Concurrent Manager ──────────────────────────────────────────────
+- id: Q-001
+  question: "A standard concurrent request has been Pending - Normal for 30 minutes. Other requests in the same manager are processing. What do I check first?"
+  expected_note: NOTE-001
+  category: concurrent-manager
+  must_contain:
+    - "Output Post Processor"
+    - "fnd_svc_components"
+  must_not_contain:
+    - "DELETE FROM fnd_concurrent_requests"
+    - "force-delete"
+
+- id: Q-002
+  question: "Concurrent requests stuck because of OPP crash — how do I restart OPP and verify it's running?"
+  expected_note: NOTE-001
+  category: concurrent-manager
+  must_contain:
+    - "OAM"
+    - "Output Post Processor"
+  must_not_contain: []
+
+- id: Q-003
+  question: "What is the table where I can see concurrent request phase and status?"
+  expected_note: NOTE-001
+  category: concurrent-manager
+  must_contain:
+    - "fnd_concurrent_requests"
+  must_not_contain: []
+
+- id: Q-004
+  question: "OPP keeps running out of memory when processing XML Publisher reports. How do I increase its heap?"
+  expected_note: NOTE-001
+  category: concurrent-manager
+  must_contain:
+    - "Xmx"
+  must_not_contain: []
+
+# ─── Workflow Mailer ─────────────────────────────────────────────────
+- id: Q-005
+  question: "Workflow Mailer says component_status is RUNNING in OAM but users aren't receiving any emails. Where do I start?"
+  expected_note: NOTE-002
+  category: workflow
+  must_contain:
+    - "wf_notifications"
+    - "mail_status"
+  must_not_contain: []
+
+- id: Q-006
+  question: "Our SMTP server's TLS certificate was just rotated and the mailer stopped sending. How do I update the JVM truststore?"
+  expected_note: NOTE-002
+  category: workflow
+  must_contain:
+    - "keytool"
+    - "cacerts"
+  must_not_contain: []
+
+- id: Q-007
+  question: "Why does the mailer log at INFO level not show TLS handshake failures?"
+  expected_note: NOTE-002
+  category: workflow
+  must_contain:
+    - "STATEMENT"
+  must_not_contain: []
+
+# ─── ADOP / Patching ─────────────────────────────────────────────────
+- id: Q-008
+  question: "adop phase=abort is failing with a serial number mismatch error. What does the error actually mean and how do I fix it?"
+  expected_note: NOTE-003
+  category: patching
+  must_contain:
+    - "context"
+    - "serial"
+  must_not_contain: []
+
+- id: Q-009
+  question: "Which file do I need to update so the adop abort can complete after a context serial mismatch?"
+  expected_note: NOTE-003
+  category: patching
+  must_contain:
+    - "CONTEXT_FILE"
+  must_not_contain: []
+
+# ─── Negative case (no relevant note) ────────────────────────────────
+- id: Q-010
+  question: "How do I configure Oracle GoldenGate replication for an EBS source database?"
+  expected_note: null   # NO note covers this; answer should say so
+  category: out-of-scope
+  must_contain:
+    - "context"     # answer must indicate insufficient context
+  must_not_contain:
+    - "Add the source database to GoldenGate Manager"   # specific made-up instruction = hallucination

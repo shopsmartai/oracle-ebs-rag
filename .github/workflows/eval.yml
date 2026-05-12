@@ -1,0 +1,107 @@
+name: eval-regression
+
+# Runs the RAG eval against the synthetic dataset and fails the PR if
+# any metric drops below the locked baseline.
+#
+# Required GitHub secrets:
+#   COHERE_API_KEY     — embeddings
+#   ANTHROPIC_API_KEY  — RAG answers + Haiku judge
+#
+# Note: this workflow stands up Oracle 23ai in a service container,
+# applies the schema, ingests the synthetic notes, then runs the eval.
+# Wall time ~5-8 minutes per PR.
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "data/synthetic_notes/**"
+      - "tests/eval/**"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      oracle:
+        image: gvenzl/oracle-free:23-slim-faststart
+        env:
+          ORACLE_PASSWORD: oracle
+        ports:
+          - 1521:1521
+        options: >-
+          --health-cmd "healthcheck.sh"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          python-version: "3.12"
+
+      - name: Install Oracle SQL*Plus client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libaio1 wget unzip
+          wget -q https://download.oracle.com/otn_software/linux/instantclient/instantclient-sqlplus-linuxx64.zip
+          wget -q https://download.oracle.com/otn_software/linux/instantclient/instantclient-basic-linuxx64.zip
+          mkdir -p /opt/oracle && cd /opt/oracle
+          sudo unzip -o /home/runner/work/oracle-ebs-rag/oracle-ebs-rag/instantclient-basic-linuxx64.zip
+          sudo unzip -o /home/runner/work/oracle-ebs-rag/oracle-ebs-rag/instantclient-sqlplus-linuxx64.zip
+          echo "/opt/oracle/$(ls /opt/oracle | head -1)" | sudo tee /etc/ld.so.conf.d/oracle-instantclient.conf
+          sudo ldconfig
+          echo "$(ls -d /opt/oracle/instantclient*)" >> $GITHUB_PATH
+
+      - name: Wait for Oracle to be ready
+        run: |
+          for i in $(seq 1 60); do
+            if sqlplus -L system/oracle@//localhost:1521/FREEPDB1 <<< "SELECT 1 FROM dual; EXIT;" >/dev/null 2>&1; then
+              echo "Oracle ready after ${i}0s"
+              break
+            fi
+            sleep 10
+          done
+
+      - name: Create users and schema
+        run: |
+          sqlplus -S system/oracle@//localhost:1521/FREEPDB1 < sql/01_users.sql
+          sqlplus -S ragapp/ragapp_dev_pwd@//localhost:1521/FREEPDB1 < sql/02_schema.sql
+          sqlplus -S ragapp/ragapp_dev_pwd@//localhost:1521/FREEPDB1 < sql/03_grants.sql
+
+      - name: Install Python deps
+        run: uv sync
+
+      - name: Ingest synthetic notes
+        env:
+          COHERE_API_KEY:  ${{ secrets.COHERE_API_KEY }}
+          ORA_USER:        ragapp
+          ORA_PASSWORD:    ragapp_dev_pwd
+          ORA_DSN:         127.0.0.1:1521/FREEPDB1
+        run: uv run ingest
+
+      - name: Run eval harness
+        env:
+          COHERE_API_KEY:     ${{ secrets.COHERE_API_KEY }}
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          ORA_USER:           ragapp
+          ORA_PASSWORD:       ragapp_dev_pwd
+          ORA_DSN:            127.0.0.1:1521/FREEPDB1
+        run: uv run python tests/eval/harness.py
+
+      - name: Regression gate
+        run: uv run python tests/eval/regression.py
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-results
+          path: tests/eval/results.json
