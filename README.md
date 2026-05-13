@@ -31,42 +31,21 @@ back to the source notes.
 
 ## Architecture
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  Streamlit UI (app.py)                                           │
-│   - Chat with streaming responses                                │
-│   - Sidebar: cumulative USD cost + cache hit rate                │
-└──────────────────────────────┬───────────────────────────────────┘
-                               │
-                               ▼
-┌──────────────────────────────────────────────────────────────────┐
-│  RAG orchestrator (src/oracle_ebs_rag/rag.py)                    │
-│   1. retrieve top-k chunks                                       │
-│   2. build prompt: system + context (cache_control=ephemeral)    │
-│   3. stream answer from Claude with citations                    │
-└────────────┬──────────────────────────────────────┬──────────────┘
-             │                                      │
-             ▼                                      ▼
-┌──────────────────────────┐         ┌────────────────────────────┐
-│ Oracle Database 23ai     │         │  Claude API                │
-│  rag_documents           │         │  - Sonnet 4.6              │
-│  rag_chunks              │         │  - prompt caching          │
-│   • VECTOR(1024, FLOAT32)│         │    on system + context     │
-│   • cosine VECTOR_DISTANCE│        │                            │
-└──────────────────────────┘         └────────────────────────────┘
-             ▲
-             │
-┌────────────┴─────────────┐
-│  Ingestion pipeline      │
-│  src/oracle_ebs_rag/     │
-│   - chunker.py (sections)│
-│   - embedder.py (Cohere) │
-│   - ingest.py (CLI)      │
-└──────────────────────────┘
-             ▲
-             │
-   data/synthetic_notes/*.md
-```
+![architecture](docs/architecture-3d.svg)
+
+Three layers, front to back:
+
+- **Front** — Streamlit chat UI; user-facing.
+- **Middle** — RAG orchestrator. Retrieves top-k chunks, assembles a
+  Claude prompt with `cache_control=ephemeral` on the system + context
+  blocks, streams the answer back.
+- **Back** — Oracle 23ai (vector store) and Claude API (LLM). Oracle
+  serves `VECTOR_DISTANCE` over a `VECTOR(1024, FLOAT32)` column; Claude
+  answers grounded in the retrieved chunks.
+
+A separate **ingestion pipeline** (purple, bottom-left) runs once per
+dataset change: read Markdown notes → split on H2 headings → call
+Cohere `embed-english-v3.0` → upsert into `rag_documents` / `rag_chunks`.
 
 ## Quickstart
 
