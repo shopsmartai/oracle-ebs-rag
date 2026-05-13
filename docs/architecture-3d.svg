@@ -1,12 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 950" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif">
   <defs>
-    <!-- Background -->
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#0b1220"/>
       <stop offset="1" stop-color="#111827"/>
     </linearGradient>
 
-    <!-- Box gradients (front faces) — consistent vertical highlight -->
     <linearGradient id="frontUi" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/>
     </linearGradient>
@@ -26,7 +24,6 @@
       <stop offset="0" stop-color="#9ca3af"/><stop offset="1" stop-color="#4b5563"/>
     </linearGradient>
 
-    <!-- Arrows -->
     <marker id="arrW" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
       <path d="M0,0 L9,3 L0,6 z" fill="#e5e7eb"/>
     </marker>
@@ -40,28 +37,22 @@
       <path d="M0,0 L9,3 L0,6 z" fill="#a78bfa"/>
     </marker>
 
-    <!-- Drop shadow for boxes -->
     <filter id="boxshadow" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
       <feOffset dx="0" dy="6"/>
       <feComponentTransfer><feFuncA type="linear" slope="0.45"/></feComponentTransfer>
       <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
-
-    <!-- Reusable isometric (cabinet) box.
-         Front face: (0,0) to (W,H). Depth dx=20, dy=-20 (up-right). -->
   </defs>
 
-  <rect width="1400" height="900" fill="url(#bg)"/>
+  <rect width="1400" height="950" fill="url(#bg)"/>
 
   <!-- ─── Title ─── -->
   <text x="80" y="80" font-size="32" font-weight="800" fill="#f9fafb" letter-spacing="-0.5">Talk to EBS</text>
   <text x="80" y="112" font-size="15" fill="#9ca3af">RAG over Oracle E-Business Suite · Oracle 23ai vector search · Claude with prompt caching</text>
   <line x1="80" y1="130" x2="320" y2="130" stroke="#374151" stroke-width="2"/>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       TIER 1 — DBA / Browser tab (no overlap with title now)
-       ═══════════════════════════════════════════════════════════ -->
+  <!-- ─── DBA / Browser tab ─── -->
   <g id="dba" transform="translate(620, 170)">
     <rect x="0" y="0" width="160" height="42" rx="21" fill="#1f2937" stroke="#374151" stroke-width="1.5"/>
     <circle cx="22" cy="21" r="9" fill="#fde68a" stroke="#f59e0b" stroke-width="1.2"/>
@@ -69,28 +60,18 @@
     <text x="44" y="26" fill="#fde68a" font-size="14" font-weight="600">DBA / Browser</text>
   </g>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       TIER 2 — Streamlit UI (front-most)
-       Box: x=480, y=260, w=440, h=110, depth dx=20 dy=-20
-       ═══════════════════════════════════════════════════════════ -->
+  <!-- ─── Streamlit UI ─── -->
   <g id="streamlit" filter="url(#boxshadow)">
-    <!-- Top face: parallelogram going up-right -->
     <polygon points="480,260 920,260 940,240 500,240" fill="#93c5fd"/>
-    <!-- Right face: parallelogram going up-right -->
     <polygon points="920,260 940,240 940,350 920,370" fill="#1d4ed8"/>
-    <!-- Front face: rectangle (readable label area) -->
     <rect x="480" y="260" width="440" height="110" fill="url(#frontUi)"/>
-    <!-- Labels -->
     <text x="700" y="293" text-anchor="middle" fill="#fff" font-size="20" font-weight="700">Streamlit UI</text>
     <text x="700" y="316" text-anchor="middle" fill="#dbeafe" font-size="12">app.py · streaming chat</text>
     <line x1="540" y1="328" x2="860" y2="328" stroke="#bfdbfe" stroke-opacity="0.4"/>
     <text x="700" y="348" text-anchor="middle" fill="#eff6ff" font-size="12">live cost · cache hit rate · Sources panel</text>
   </g>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       TIER 3 — RAG Orchestrator (the brain)
-       Box: x=440, y=460, w=520, h=130
-       ═══════════════════════════════════════════════════════════ -->
+  <!-- ─── RAG Orchestrator ─── -->
   <g id="rag" filter="url(#boxshadow)">
     <polygon points="440,460 960,460 980,440 460,440" fill="#6ee7b7"/>
     <polygon points="960,460 980,440 980,570 960,590" fill="#047857"/>
@@ -102,11 +83,7 @@
     <text x="700" y="568" text-anchor="middle" fill="#ecfdf5" font-size="13">3. stream grounded answer with citations</text>
   </g>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       TIER 4 — Oracle 23ai (left) and Claude API (right)
-       ═══════════════════════════════════════════════════════════ -->
-
-  <!-- Oracle 23ai -->
+  <!-- ─── Oracle 23ai ─── -->
   <g id="oracle" filter="url(#boxshadow)">
     <polygon points="160,680 500,680 520,660 180,660" fill="#fca5a5"/>
     <polygon points="500,680 520,660 520,800 500,820" fill="#991b1b"/>
@@ -119,7 +96,7 @@
     <text x="330" y="804" text-anchor="middle" fill="#fef2f2" font-size="12">rag_documents · rag_chunks</text>
   </g>
 
-  <!-- Claude API -->
+  <!-- ─── Claude API ─── -->
   <g id="claude" filter="url(#boxshadow)">
     <polygon points="900,680 1240,680 1260,660 920,660" fill="#fde68a"/>
     <polygon points="1240,680 1260,660 1260,800 1240,820" fill="#92400e"/>
@@ -133,31 +110,37 @@
   </g>
 
   <!-- ═══════════════════════════════════════════════════════════
-       SIDE PATH — Ingestion (independent of request path)
+       INGESTION CLUSTER (bottom-left, clearly separated)
+       Notes  →  Ingest, then a clean VERTICAL arrow up into Oracle.
        ═══════════════════════════════════════════════════════════ -->
+
+  <!-- Section divider — visually separates ingest from request flow -->
+  <line x1="80" y1="855" x2="540" y2="855" stroke="#1f2937" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="80" y="846" fill="#6b7280" font-size="11" font-style="italic" font-weight="500">one-time / batch ingestion</text>
 
   <!-- Synthetic notes -->
   <g id="notes" filter="url(#boxshadow)">
-    <polygon points="60,840 180,840 196,824 76,824" fill="#d1d5db"/>
-    <polygon points="180,840 196,824 196,884 180,900" fill="#1f2937"/>
-    <rect x="60" y="840" width="120" height="60" fill="url(#frontNotes)"/>
-    <text x="120" y="864" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Synthetic notes</text>
-    <text x="120" y="880" text-anchor="middle" fill="#f3f4f6" font-size="10">data/synthetic_notes/*.md</text>
-    <text x="120" y="894" text-anchor="middle" fill="#e5e7eb" font-size="9">YAML frontmatter</text>
+    <polygon points="80,880 220,880 236,864 96,864" fill="#d1d5db"/>
+    <polygon points="220,880 236,864 236,940 220,956" fill="#1f2937"/>
+    <rect x="80" y="880" width="140" height="60" fill="url(#frontNotes)"/>
+    <text x="150" y="903" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Synthetic notes</text>
+    <text x="150" y="920" text-anchor="middle" fill="#f3f4f6" font-size="10">data/synthetic_notes/*.md</text>
+    <text x="150" y="934" text-anchor="middle" fill="#e5e7eb" font-size="10">YAML frontmatter</text>
   </g>
 
-  <!-- Ingestion -->
+  <!-- Ingest -->
   <g id="ingest" filter="url(#boxshadow)">
-    <polygon points="240,840 400,840 416,824 256,824" fill="#ddd6fe"/>
-    <polygon points="400,840 416,824 416,884 400,900" fill="#4c1d95"/>
-    <rect x="240" y="840" width="160" height="60" fill="url(#frontIngest)"/>
-    <text x="320" y="862" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Ingest</text>
-    <text x="320" y="878" text-anchor="middle" fill="#ede9fe" font-size="10">chunk · embed · upsert</text>
-    <text x="320" y="892" text-anchor="middle" fill="#ede9fe" font-size="10">Cohere embed-v3 · 1024-dim</text>
+    <polygon points="280,880 460,880 476,864 296,864" fill="#ddd6fe"/>
+    <polygon points="460,880 476,864 476,940 460,956" fill="#4c1d95"/>
+    <rect x="280" y="880" width="180" height="60" fill="url(#frontIngest)"/>
+    <text x="370" y="903" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Ingest pipeline</text>
+    <text x="370" y="920" text-anchor="middle" fill="#ede9fe" font-size="10">chunk · embed · upsert</text>
+    <text x="370" y="934" text-anchor="middle" fill="#ede9fe" font-size="10">Cohere embed-v3 · 1024-dim</text>
   </g>
 
   <!-- ═══════════════════════════════════════════════════════════
-       ARROWS — request path (white), response (dim), batch (purple)
+       ARROWS — request path (white), response (gray), LLM (amber),
+       batch (purple)
        ═══════════════════════════════════════════════════════════ -->
 
   <!-- DBA → Streamlit -->
@@ -171,41 +154,38 @@
   <path d="M520,592 Q420,640 360,675" stroke="#e5e7eb" stroke-width="2.5" fill="none" marker-end="url(#arrW)"/>
   <text x="384" y="625" fill="#cbd5e1" font-size="11" font-style="italic">retrieve</text>
 
-  <!-- Oracle → RAG (top-k chunks) — separate curve, dimmer + dashed -->
+  <!-- Oracle → RAG (top-k chunks) — dashed gray -->
   <path d="M440,675 Q500,640 580,592" stroke="#9ca3af" stroke-width="2" fill="none" stroke-dasharray="5 4" marker-end="url(#arrG)"/>
   <text x="478" y="655" fill="#9ca3af" font-size="11" font-style="italic">top-k chunks</text>
 
-  <!-- RAG → Claude (prompt + context) — right curve -->
+  <!-- RAG → Claude (prompt + context) — amber -->
   <path d="M880,592 Q990,640 1040,675" stroke="#fbbf24" stroke-width="2.5" fill="none" marker-end="url(#arrA)"/>
   <text x="985" y="625" fill="#fde68a" font-size="11" font-style="italic">prompt + context</text>
 
-  <!-- Claude → RAG (stream answer) — separate curve, dimmer + dashed -->
+  <!-- Claude → RAG (stream answer) — dashed amber -->
   <path d="M960,675 Q900,640 820,592" stroke="#fcd34d" stroke-width="2" fill="none" stroke-dasharray="5 4" marker-end="url(#arrA)"/>
   <text x="858" y="655" fill="#fde68a" font-size="11" font-style="italic">stream answer</text>
 
-  <!-- Notes → Ingest -->
-  <path d="M188,870 L237,870" stroke="#a78bfa" stroke-width="2.5" fill="none" marker-end="url(#arrP)"/>
+  <!-- Notes → Ingest (horizontal) -->
+  <path d="M228,910 L277,910" stroke="#a78bfa" stroke-width="2.5" fill="none" marker-end="url(#arrP)"/>
 
-  <!-- Ingest → Oracle (batch upsert) — curve up -->
-  <path d="M340,840 Q330,790 320,750 Q310,710 270,690" stroke="#a78bfa" stroke-width="2.5" stroke-dasharray="7 5" fill="none" marker-end="url(#arrP)"/>
-  <text x="200" y="760" fill="#c4b5fd" font-size="11" font-style="italic" transform="rotate(-32, 200, 760)">batch · upsert vectors</text>
+  <!-- Ingest → Oracle (clean VERTICAL upsert into Oracle's bottom-left) -->
+  <path d="M370,862 L370,824" stroke="#a78bfa" stroke-width="2.5" stroke-dasharray="6 4" fill="none" marker-end="url(#arrP)"/>
+  <text x="385" y="848" fill="#c4b5fd" font-size="11" font-style="italic">batch · upsert vectors</text>
 
   <!-- ═══════════════════════════════════════════════════════════
-       LEGEND
+       LEGEND (top-right)
        ═══════════════════════════════════════════════════════════ -->
   <g transform="translate(1080, 200)">
-    <rect x="0" y="0" width="220" height="110" rx="8" fill="#1f2937" stroke="#374151" stroke-width="1"/>
+    <rect x="0" y="0" width="220" height="120" rx="8" fill="#1f2937" stroke="#374151" stroke-width="1"/>
     <text x="14" y="22" fill="#f3f4f6" font-size="13" font-weight="700">Flows</text>
-    <line x1="14" y1="42" x2="48" y2="42" stroke="#e5e7eb" stroke-width="2.5" marker-end="url(#arrW)"/>
-    <text x="56" y="47" fill="#d1d5db" font-size="11">request path</text>
-    <line x1="14" y1="64" x2="48" y2="64" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrG)"/>
-    <text x="56" y="69" fill="#d1d5db" font-size="11">response data</text>
-    <line x1="14" y1="86" x2="48" y2="86" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arrA)"/>
-    <text x="56" y="91" fill="#d1d5db" font-size="11">LLM call</text>
-    <line x1="14" y1="103" x2="48" y2="103" stroke="#a78bfa" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#arrP)"/>
-    <text x="56" y="108" fill="#d1d5db" font-size="11">batch ingestion</text>
+    <line x1="14" y1="44" x2="48" y2="44" stroke="#e5e7eb" stroke-width="2.5" marker-end="url(#arrW)"/>
+    <text x="56" y="49" fill="#d1d5db" font-size="11">request path</text>
+    <line x1="14" y1="66" x2="48" y2="66" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrG)"/>
+    <text x="56" y="71" fill="#d1d5db" font-size="11">response data</text>
+    <line x1="14" y1="88" x2="48" y2="88" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arrA)"/>
+    <text x="56" y="93" fill="#d1d5db" font-size="11">LLM call</text>
+    <line x1="14" y1="110" x2="48" y2="110" stroke="#a78bfa" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#arrP)"/>
+    <text x="56" y="115" fill="#d1d5db" font-size="11">batch ingestion</text>
   </g>
-
-  <!-- Footer / repo hint -->
-  <text x="80" y="870" fill="#4b5563" font-size="11">github.com/shopsmartai/oracle-ebs-rag</text>
 </svg>
