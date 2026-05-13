@@ -39,7 +39,7 @@ Here's the proof, then the lessons.
 
 A chat interface where I ask plain-English questions about EBS production scenarios and the system responds with grounded answers and inline citations to the source notes.
 
-{% youtube PnlbIypTfsc %}
+{% youtube HDMUIlwQl-I %}
 
 The stack:
 
