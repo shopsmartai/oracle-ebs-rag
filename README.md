@@ -31,7 +31,11 @@ back to the source notes.
 
 ## Architecture
 
-![architecture](docs/architecture-3d.svg)
+![architecture](docs/architecture-dalle.png)
+
+*The cubes above are colour-coded by function. The labelled, technical view:*
+
+![architecture (labelled)](docs/architecture-3d.svg)
 
 Three layers, front to back:
 
